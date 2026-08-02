@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>세션 작업 요약 · 화면 데이터 설명</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" />
+<style>
+  :root{
+    --bg:#f3f5fa; --ink:#1f2430; --ink-soft:#6b7280; --ink-faint:#9aa3b5;
+    --line:#e6e9f2; --card:#ffffff;
+    --blue:#3d5aff; --blue-soft:#eef1ff;
+    --green:#1e8f5f; --green-soft:#e8f7ef;
+    --amber:#a65b00; --amber-soft:#fff1d6;
+    --red:#c0392b; --red-soft:#fdeceb;
+    --purple:#6a1b9a; --purple-soft:#f3e8fb;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;
+    line-height:1.6;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:40px 20px 100px;}
+  h1{
+    font-family:'Jua','Pretendard Variable',sans-serif;
+    font-size:26px;margin:0 0 6px;
+  }
+  .subtitle{color:var(--ink-soft);font-size:14px;margin-bottom:32px;}
+  h2{
+    font-size:18px;margin:48px 0 4px;
+    display:flex;align-items:center;gap:8px;
+  }
+  h2 .num{
+    font-family:'Jua';font-size:13px;color:#fff;background:var(--blue);
+    width:24px;height:24px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  h3{font-size:14.5px;margin:22px 0 8px;color:var(--ink);}
+  p{margin:8px 0;font-size:14px;color:var(--ink);}
+  .lead{color:var(--ink-soft);font-size:13.5px;margin:2px 0 18px;}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:20px 22px;margin:14px 0;box-shadow:0 2px 10px -6px rgba(20,30,60,.08);
+  }
+
+  table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0;}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{color:var(--ink-soft);font-weight:700;font-size:12px;white-space:nowrap;}
+  td code, p code, li code{
+    background:var(--blue-soft);color:var(--blue);
+    padding:1px 6px;border-radius:5px;font-size:12px;
+    font-family:'SF Mono',Menlo,monospace;
+  }
+  td.val{font-weight:700;}
+
+  .badge{
+    display:inline-flex;align-items:center;gap:4px;
+    font-size:11px;font-weight:800;padding:3px 9px;border-radius:99px;
+  }
+  .badge.done{background:var(--green-soft);color:var(--green);}
+  .badge.found{background:var(--amber-soft);color:var(--amber);}
+  .badge.skip{background:#eee;color:var(--ink-soft);}
+  .badge.warn{background:var(--red-soft);color:var(--red);}
+
+  .step{
+    display:flex;gap:14px;margin:14px 0;
+  }
+  .step .dot{
+    width:10px;height:10px;border-radius:50%;background:var(--blue);
+    margin-top:6px;flex-shrink:0;
+  }
+  .step .body{flex:1;}
+  .step .req{font-weight:800;font-size:14px;}
+  .step .desc{font-size:13px;color:var(--ink-soft);margin-top:2px;}
+
+  .pre{
+    background:#0f1220;color:#d7deee;
+    border-radius:12px;padding:14px 16px;
+    font-family:'SF Mono',Menlo,monospace;font-size:12px;
+    overflow-x:auto;line-height:1.55;margin:10px 0;
+  }
+  .pre .c{color:#7d8ba8;}
+  .pre .k{color:#7cc4ff;}
+  .pre .s{color:#ffb86c;}
+
+  .img-frame{
+    border:1px solid var(--line);border-radius:14px;overflow:hidden;
+    max-width:260px;margin:8px 0 14px;
+  }
+  .img-frame img{display:block;width:100%;}
+
+  .flag{
+    display:inline-block;font-size:11px;font-weight:800;
+    padding:2px 8px;border-radius:6px;margin-left:6px;
+  }
+  .flag.confirmed{background:var(--green-soft);color:var(--green);}
+  .flag.inference{background:var(--amber-soft);color:var(--amber);}
+
+  .callout{
+    border-left:3px solid var(--amber);background:var(--amber-soft);
+    border-radius:8px;padding:12px 14px;font-size:13px;margin:14px 0;color:#5c3a00;
+  }
+  .callout.ok{border-color:var(--green);background:var(--green-soft);color:#0f5132;}
+  .callout b{display:block;margin-bottom:2px;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:640px){.grid2{grid-template-columns:1fr;}}
+
+  .filepath{font-size:12px;color:var(--ink-faint);margin:2px 0 10px;font-family:'SF Mono',Menlo,monospace;}
+
+  footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);color:var(--ink-faint);font-size:12px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>이번 세션 작업 요약</h1>
+  <div class="subtitle">수집 컬렉션 도감 화면 개선 — 목업 → 실제 코드 반영 → 화면별 데이터 출처 설명</div>
+
+  <!-- ───────────────────────────── 1. 진행 타임라인 ───────────────────────────── -->
+  <h2><span class="num">1</span>진행 타임라인</h2>
+  <p class="lead">4번의 요청을 거치며, 목업에서 발견한 문제 중 실제 코드에 존재하지 않는 것은 걸러내고 실제로 존재하는 더 큰 문제를 찾아 고쳤습니다.</p>
+
+  <div class="card">
+    <div class="step">
+      <div class="dot"></div>
+      <div class="body">
+        <div class="req">① "개선 목업을 HTML로 보여줘" <span class="badge done">완료</span></div>
+        <div class="desc">수집 컬렉션 도감 스크린샷을 분석 → 잠금 해제 조건 표시, 스크롤 신호, EXP 진행바 등을 추가한 개선 목업을 HTML로 제작 → gist + htmlpreview로 외부 링크 발행.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="dot"></div>
+      <div class="body">
+        <div class="req">② "링크가 너무 길어서 잘려" <span class="badge done">완료</span></div>
+        <div class="desc">GitHub Pages(<code>ghyun53.github.io/stocki-collection-mockup</code>)로 재호스팅 후 tinyurl로 단축.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="dot"></div>
+      <div class="body">
+        <div class="req">③ "Riot 시니어 디자이너처럼, 최소 수정으로 최대 개선" <span class="badge done">완료</span></div>
+        <div class="desc">목업을 재감사 → 명암비 계산으로 실측: 등급 텍스트 색상 2.0~3.5:1(WCAG 4.5:1 미달), 중복 범례 행, NEW 배지 색상 충돌, 중복 보상칩 발견 → 4곳만 수정 후 96점으로 재평가, 종료.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="dot"></div>
+      <div class="body">
+        <div class="req">④ "그렇게 바꿔줘" (실제 코드 반영) <span class="badge found">재검토 후 반영</span></div>
+        <div class="desc">
+          실제 코드(<code>CharacterCard.tsx</code>, <code>CollectionBonusPanel.tsx</code>)를 확인해보니 목업의 문제 3개는 실존하지 않았습니다 — 그대로 옮기지 않고, 대신 실제 코드를 <b>같은 방식(명암비 계산)으로 재감사</b>해서 더 크고 실재하는 문제(뱃지 4종 + NEW 리본 + 등급 텍스트 + 안내 문구, 총 9곳이 WCAG 기준 미달)를 찾아 수정했습니다.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>④에서 "그대로 옮기지 않은" 3가지 — 왜?</h3>
+  <table>
+    <tr><th>목업에서 지적</th><th>실제 코드 확인 결과</th><th>판단</th></tr>
+    <tr>
+      <td>등급 범례 행이 카드와 중복</td>
+      <td>실제 화면엔 범례 행 자체가 없음 (목업 제작 중 제가 임의로 추가한 것)</td>
+      <td><span class="badge skip">스킵</span></td>
+    </tr>
+    <tr>
+      <td>"미완성" 보상칩이 "완성 보상" 칩과 중복</td>
+      <td><code>CollectionBonusPanel.tsx:167</code> — 도감 골드 보너스(세트 보너스)와 <code>:178</code> 탐험 티켓(1회성 보상)은 <b>서로 다른 보상</b>. 삭제 시 정보 손실</td>
+      <td><span class="badge skip">스킵</span></td>
+    </tr>
+    <tr>
+      <td>NEW 배지 빨강 = 경고색과 충돌</td>
+      <td><code>theme.ts:106~109</code> — 이 앱은 <b>한국 증시 관례(빨강=상승/파랑=하락)</b>를 사용. "기운 부족"은 이미 파란색(<code>priceDown</code>)이라 실제로는 충돌 없음</td>
+      <td><span class="badge skip">스킵</span></td>
+    </tr>
+  </table>
+
+  <h3>대신 실제로 고친 것 — 명암비 재감사 결과</h3>
+  <table>
+    <tr><th>위치</th><th>수정 전</th><th>수정 후</th><th>명암비</th></tr>
+    <tr><td>게임 뱃지 4종 (애정캐·HOT·즐겨찾기·선물가능)</td><td class="val">원색 배경 + 흰 텍스트</td><td class="val">연한 틴트 배경 + 진한 텍스트</td><td>1.97~3.44:1 → 4.6~4.7:1</td></tr>
+    <tr><td>NEW 리본</td><td class="val">#FF3B30 배경 + 흰 텍스트</td><td class="val">#FFE0DE 배경 + #CE0B00 텍스트</td><td>3.55:1 → 4.62:1</td></tr>
+    <tr><td>메가캡 등급 텍스트</td><td class="val">#B86500</td><td class="val">#A65B00</td><td>3.93~4.20:1 → 4.67~5.0:1</td></tr>
+    <tr><td>시너지 세트 "활성화됨" 문구</td><td class="val">#FF8C00</td><td class="val">#B06100</td><td>2.33:1 → 4.61:1</td></tr>
+    <tr><td>"완성 보상" 문구</td><td class="val">#2E8B57</td><td class="val">#2C8453</td><td>4.25:1 → 4.63:1</td></tr>
+    <tr><td>"다음 친구 영입 추천" 문구</td><td class="val">#B8860B</td><td class="val">#906909</td><td>3.01:1 → 4.61:1</td></tr>
+  </table>
+  <div class="callout ok"><b>검증</b>9곳 전부 WCAG AA 4.5:1 이상 재계산 확인, <code>tsc --noEmit</code> · <code>eslint</code> 통과.</div>
+
+
+  <!-- ───────────────────────────── 2. 이미지 1 설명 ───────────────────────────── -->
+  <h2><span class="num">2</span>캡처 화면 ① — 말풍선 + 진행바 + 아이콘 버튼</h2>
+  <p class="lead">"오늘 +7.3%야! 😆 매우 신남" 말풍선, 초록 진행바, 아이콘 버튼</p>
+
+  <div class="card">
+    <div class="callout">
+      <b>솔직한 정정 — 이 화면은 이 저장소의 React Native 코드로 그려지지 않습니다 <span class="flag confirmed">확인됨</span></b>
+      홈 화면은 <code>UnityWebView</code>(Unity로 만든 3D/2D 캐릭터 게임 화면)를 그대로 띄우는 구조입니다(<code>HomeScreen.tsx:187~199</code>). 말풍선 문구·진행바·아이콘 버튼은 <b>Unity 프로젝트 쪽 화면 요소</b>로, 그 Unity 프로젝트 자체는 이 저장소에 없어서 정확한 문구 로직은 코드로 보여드릴 수 없습니다. 대신 <b>Unity에 어떤 주식 데이터가 전달되는지</b>는 이 저장소의 코드(다리 역할을 하는 브릿지)에서 100% 확인 가능합니다.
+    </div>
+
+    <h3>데이터가 흘러가는 경로</h3>
+    <div class="pre"><span class="c">// src/features/home/HomeScreen.tsx (LinkedHomeContent)</span>
+보유 종목(holdings) + 시세 메타데이터(metaMap)
+   ↓ <span class="k">holdingToMarketUpdate</span>()   <span class="c">// src/features/home/utils/buildUnityPayload.ts:75</span>
+   ↓ <span class="k">send</span>(payload)              <span class="c">// useUnityBridge → WebView 로 postMessage</span>
+   ↓
+Unity WebGL 캐릭터 (말풍선·진행바·아이콘 렌더링 — 이 저장소 밖)</div>
+
+    <h3>Unity로 넘어가는 실제 데이터 필드 <span class="flag confirmed">코드 확인</span></h3>
+    <table>
+      <tr><th>필드</th><th>의미</th><th>출처</th></tr>
+      <tr><td><code>ticker</code></td><td>종목 코드 (예: AAPL)</td><td><code>holding.symbol</code></td></tr>
+      <tr><td><code>changeRate</code></td><td>누적 수익률(%) — 매수 이후 총 손익률</td><td><code>holding.profitLossRate</code></td></tr>
+      <tr><td><code>dailyChangeRate</code></td><td><b>오늘 하루치 등락률(%)</b> — 말풍선 "+7.3%"의 유력한 출처</td><td><code>meta.dailyChangeRate</code> (종목 메타 API)</td></tr>
+      <tr><td><code>volatilityGrade</code></td><td>변동성 등급 (stable/normal/volatile/super_volatile) — 감정 반응 민감도 조절에 사용</td><td><code>meta.volatilityGrade</code></td></tr>
+      <tr><td><code>isShockEvent</code></td><td>당일 등락이 변동성 등급별 임계값을 넘었는지 (예: stable 5%↑, normal 7%↑) — 넘으면 캐릭터가 "놀람" 반응</td><td><code>isShockEvent(dailyChangeRate, volatilityGrade)</code></td></tr>
+      <tr><td><code>sizeMultiplier</code></td><td>보유 평가금액(만원)에 비례한 캐릭터 크기</td><td><code>calcSizeMultiplier(평가금액)</code></td></tr>
+      <tr><td><code>evolutionStage</code></td><td>보유 일수에 따른 성장 단계</td><td><code>calcEvolution(holdingDays)</code></td></tr>
+      <tr><td><code>isHospitalized</code></td><td>수익률이 나빠 "병원행" 상태인지</td><td><code>isHospitalized(changeRate)</code></td></tr>
+    </table>
+
+    <div class="callout"><b>말풍선 감정 문구의 기준값 <span class="flag inference">추정 — 참고용 로직</span></b>
+      이 저장소엔 Unity가 감정을 판단하는 코드가 없지만, 같은 로직을 <b>TS로 미리 정의해 둔 참고 함수</b>가 있습니다(<code>src/utils/unityCalc.ts:55</code> <code>calcEmotion(changeRate, volatilityGrade)</code>). 변동성 등급별 임계값(<code>EMOTION_THRESHOLDS</code>)을 넘으면 감정 레벨 1~5를 반환합니다. Unity 쪽이 동일한 기준을 쓴다면, "😆 매우 신남"은 이 임계값을 넘는 고수익 구간일 가능성이 높습니다.
+    </div>
+
+    <h3>진행바 + 아이콘 버튼 <span class="flag inference">추정</span></h3>
+    <p>구조상 초록 진행바는 캐릭터 <b>레벨/성장 진행률</b>(<code>StockDetailContent.tsx</code>의 <code>levelProgress</code>와 동일 개념), 아이콘 버튼은 상세 화면 진입 또는 뉴스/관찰일지 버튼일 가능성이 높습니다 — 다만 이 두 요소는 Unity 캔버스 내부에 렌더링되어 이 저장소의 텍스트 검색으로는 정확한 소스를 확정할 수 없습니다. <b>확정하려면 Unity 프로젝트 소스 또는 담당 개발자 확인이 필요합니다.</b></p>
+  </div>
+
+
+  <!-- ───────────────────────────── 3. 이미지 2 설명 ───────────────────────────── -->
+  <h2><span class="num">3</span>캡처 화면 ② — "동료 성향 프로필" / "대표 능력치"</h2>
+  <p class="lead">칭호 · 성격 · 좋아하는 것 · 싫어하는 것 / 성장력·안정감·활력·선물력 막대</p>
+
+  <div class="card">
+    <div class="callout ok"><b>이건 100% 확인됨 <span class="flag confirmed">코드 일치</span></b>
+      <code>src/features/dokgam/CharacterDetailScreen.tsx</code>의 "프로필" 탭이며, 캡처 속 값이 <b>Apple(AAPL)</b> 데이터와 정확히 일치합니다.
+    </div>
+
+    <div class="filepath">src/features/dokgam/CharacterDetailScreen.tsx:416~480</div>
+    <div class="pre"><span class="c">// 🎭 동료 성향 프로필</span>
+칭호        {detail.title}          <span class="c">// 라인 424</span>
+성격        {detail.personality}    <span class="c">// 라인 428</span>
+좋아하는 것  {detail.likes.join(', ')}     <span class="c">// 라인 434</span>
+싫어하는 것  {detail.dislikes.join(', ')}  <span class="c">// 라인 440</span>
+
+<span class="c">// 📊 대표 능력치 — ■(채움)□(빈칸) 5칸 막대</span>
+🌱 성장력    detail.stats.growth      <span class="c">// 라인 454</span>
+🛡️ 안정감    detail.stats.stability   <span class="c">// 라인 461</span>
+⚡ 활력      detail.stats.volatility  <span class="c">// 라인 468</span>
+🎁 선물력    detail.stats.dividend    <span class="c">// 라인 475</span></div>
+
+    <h3>Apple(AAPL)의 실제 데이터 값</h3>
+    <div class="filepath">src/mocks/dokgamMock.ts:121~126 (DETAIL_SEED.AAPL)</div>
+    <table>
+      <tr><th>필드</th><th>값</th><th>캡처와 일치</th></tr>
+      <tr><td>title (칭호)</td><td class="val">생태계의 제왕 🐹</td><td>✅</td></tr>
+      <tr><td>personality (성격)</td><td class="val">😎 완벽주의자</td><td>✅</td></tr>
+      <tr><td>likes (좋아하는 것)</td><td class="val">📱 아이폰, ☁️ 자체 생태계, 🎵 서비스</td><td>✅</td></tr>
+      <tr><td>dislikes (싫어하는 것)</td><td class="val">🔓 개방성 요구, 📉 느린 칩 설계</td><td>✅</td></tr>
+      <tr><td>stats.growth (성장력)</td><td class="val">4/5</td><td>✅</td></tr>
+      <tr><td>stats.stability (안정감)</td><td class="val">5/5</td><td>✅</td></tr>
+      <tr><td>stats.volatility (활력)</td><td class="val">2/5</td><td>✅</td></tr>
+      <tr><td>stats.dividend (선물력)</td><td class="val">3/5</td><td>✅</td></tr>
+    </table>
+
+    <h3>지금은 mock, 나중엔 어디서 오나</h3>
+    <p><code>src/mocks/dokgamMock.ts:110~112</code> 주석: <i>"상세 화면 정적 콘텐츠(칭호·성격·좋아함/싫어함 등)는 보유 6종목만 시딩. 실서버에서는 <code>dokgam_character</code> 마스터 테이블(정적 콘텐츠, 기획 CMS 입력)에서 온다."</i></p>
+    <p>즉 <b>기획팀이 CMS로 종목별 칭호·성격·좋아함/싫어함·능력치를 입력</b>하면 백엔드 마스터 테이블에 저장되고, 프론트는 그 값을 그대로 받아 렌더링하는 구조로 설계돼 있습니다 (현재는 프론트 mock으로 6종목만 미리 채워둔 상태).</p>
+
+    <h3>능력치 막대 색상 매핑 <span class="flag confirmed">코드 확인</span></h3>
+    <table>
+      <tr><th>능력치</th><th>색상 토큰</th></tr>
+      <tr><td>🌱 성장력</td><td><code>colors.tint</code> (파랑)</td></tr>
+      <tr><td>🛡️ 안정감</td><td><code>colors.success</code> (초록)</td></tr>
+      <tr><td>⚡ 활력</td><td><code>colors.danger</code> (빨강)</td></tr>
+      <tr><td>🎁 선물력</td><td><code>colors.warning</code> (노랑)</td></tr>
+    </table>
+  </div>
+
+  <footer>
+    작성 기준: 2026-08-01 세션 · 코드 인용은 실제 저장소 라인 번호 기준이며 세션 중 변경될 수 있습니다.
+  </footer>
+
+</div>
+</body>
+</html>
